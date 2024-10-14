@@ -4,11 +4,17 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-  
-  const adminPwd = await bcrypt.hash('crmsrv@12A', 10);
-  const userPwd = await bcrypt.hash('websrvsigma308', 10);
 
-  // Upsert roles (to avoid duplicates)
+  const passwords = {
+    user1: 'crmsrv@12A',
+    user2: 'websrvsigma308',
+    user3: 'user_password',
+  };
+
+  const hashedPasswords = await Promise.all(
+    Object.values(passwords).map((password) => bcrypt.hash(password, 10))
+  );
+
   const adminRole = await prisma.role.upsert({
     where: { name: 'Admin' },
     update: {},
@@ -33,62 +39,41 @@ async function main() {
     },
   });
 
-  // Upsert users (to avoid duplicates)
   await prisma.user.upsert({
     where: { name: 'admin_user123' },
     update: {},
     create: {
       name: 'admin_user123',
-      password: adminPwd,
+      password: hashedPasswords[0],
       roleId: adminRole.id,
     },
   });
 
-  await prisma.user.upsert({
-    where: { name: 'test_user123' },
-    update: {},
-    create: {
-      name: 'test_user123',
-      password: userPwd,
-      roleId: userRole.id,
-    },
-  });
-
-  // Upsert books (to avoid duplicates)
-  const booksData = [
-    {
-      title: 'Book 1',
-      author: 'Author 1',
-      publicationDate: new Date('2020-01-01'),
-      createdTime: new Date(),
-      updatedTime: new Date(),
-      isDeleted: false,
-    },
-    {
-      title: 'Book 2',
-      author: 'Author 2',
-      publicationDate: new Date('2020-02-01'),
-      createdTime: new Date(),
-      updatedTime: new Date(),
-      isDeleted: false,
-    },
-    {
-      title: 'Book 3',
-      author: 'Author 3',
-      publicationDate: new Date('2020-03-01'),
-      createdTime: new Date(),
-      updatedTime: new Date(),
-      isDeleted: false,
-    },
-    {
-      title: 'Book 4',
-      author: 'Author 4',
-      publicationDate: new Date('2020-04-01'),
-      createdTime: new Date(),
-      updatedTime: new Date(),
-      isDeleted: false,
-    },
+  const usersData = [
+    { name: 'Jeff', password: hashedPasswords[1], roleId: userRole.id },
+    { name: 'Adams', password: hashedPasswords[2], roleId: userRole.id },
   ];
+
+  for (const userData of usersData) {
+    await prisma.user.upsert({
+      where: { name: userData.name },
+      update: {},
+      create: userData,
+    });
+  }
+
+  // Dummy book records
+  const booksData = [];
+  for (let i = 1; i <= 30; i++) {
+    booksData.push({
+      title: `Book ${i}`,
+      author: `Author ${i}`,
+      publicationDate: new Date(`2020-0${i % 12 + 1}-01`),
+      createdTime: new Date(),
+      updatedTime: new Date(),
+      isDeleted: false,
+    });
+  }
 
   for (const bookData of booksData) {
     await prisma.book.upsert({
@@ -98,29 +83,56 @@ async function main() {
     });
   }
 
-  // Assign books to the user
-  const user = await prisma.user.findUnique({ where: { name: 'test_user123' } });
-  const books = await prisma.book.findMany({
-    where: { title: { in: ['Book 1', 'Book 2'] } },
-  });
+  const users = await prisma.user.findMany({ where: { roleId: userRole.id } });
+  const books = await prisma.book.findMany();
 
-  for (const book of books) {
-    await prisma.userBook.upsert({
-      where: {
-        userId_bookId: {
-          userId: user!.id,
+  const sharedBooks = books.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 2) + 3);
+
+  for (const user of users) {
+    let selectedBooks = [];
+
+    if (user.name === 'Jeff' || user.name === 'Adams') {
+      selectedBooks.push(...sharedBooks);
+
+      const remainingBooks = books.filter(book => !sharedBooks.includes(book));
+      const uniqueBooks = remainingBooks.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 2) + 5);
+
+      selectedBooks.push(...uniqueBooks);
+    } else {
+      selectedBooks = books.sort(() => 0.5 - Math.random()).slice(0, 5);
+    }
+
+    for (const book of selectedBooks) {
+      const existingUserBook = await prisma.userBook.findFirst({
+        where: {
+          userId: user.id,
           bookId: book.id,
+          isDeleted: false,
         },
-      },
-      update: {},
-      create: {
-        userId: user!.id,
-        bookId: book.id,
-        createdTime: new Date(),
-        updatedTime: new Date(),
-        isDeleted: false,
-      },
-    });
+      });
+
+      if (existingUserBook) {
+        await prisma.userBook.update({
+          where: {
+            id: existingUserBook.id,
+          },
+          data: {
+            updatedTime: new Date(),
+            isDeleted: false,
+          },
+        });
+      } else {
+        await prisma.userBook.create({
+          data: {
+            userId: user.id,
+            bookId: book.id,
+            createdTime: new Date(),
+            updatedTime: new Date(),
+            isDeleted: false,
+          },
+        });
+      }
+    }
   }
 
   console.log('Seed data created.');

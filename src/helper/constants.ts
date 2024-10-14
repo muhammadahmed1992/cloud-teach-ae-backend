@@ -8,4 +8,8 @@ export default class Constants {
     public static readonly BOOK_NOT_FOUND = "Book not found!.";
     public static readonly BOOK_DELETED = "Book has been deleted!.";
     public static readonly BOOK_UPDATED = "Book has been updated!.";
+    public static readonly BOOK_ALREADY_ASSIGNED = "This book is already assigned. It can not be deleted";
+
+    public static readonly USER_OWN_REVIEW = 'User can only delete its own review';
+    public static readonly USER_CREATE_OWN_REVIEW = 'User can only mark review to its assigned book';
 }

@@ -1,10 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsString, IsOptional, IsDate } from 'class-validator';
 
-export class BookDto {
-  
-  id: number;  
-  
+export class BookDto {  
   @IsNotEmpty()
   @IsString()
   title: string;
