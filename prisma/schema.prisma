@@ -13,7 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User model
 model User {
   id          Int        @id @default(autoincrement())
   name        String     @unique
@@ -24,12 +23,13 @@ model User {
   roleId      Int
 
   role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  bookReviews BookReview[]
 }
 
-// Role model
 model Role {
   id          Int        @id @default(autoincrement())
-  name        String   
+  name        String     @unique
   description String?
   createdTime DateTime   @default(now())
   updatedTime DateTime?  @updatedAt
@@ -40,11 +40,40 @@ model Role {
 
 model Book {
   id              Int       @id @default(autoincrement())
-  title           String
+  title           String    @unique // Just for now for the sake of this test and making seed data not to duplicate.
   author          String
   publicationDate DateTime
   bookCover       String?
   createdTime     DateTime  @default(now())
   updatedTime     DateTime?
   isDeleted       Boolean    @default(false)
+  reviews         BookReview[]
+  userBooks       UserBook[]
+}
+
+model BookReview {
+  id             Int          @id @default(autoincrement())
+  rating         Int
+  reviewText     String        @db.VarChar(500)
+  dateOfReview   DateTime
+  bookId         Int
+  userId         Int
+  book           Book          @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdTime    DateTime      @default(now())
+  updatedTime    DateTime?
+  isDeleted      Boolean       @default(false)
+}
+
+
+model UserBook {
+  id             Int          @id @default(autoincrement())
+  userId         Int
+  bookId         Int
+  book           Book          @relation(fields: [bookId], references: [id])
+  createdTime    DateTime      @default(now())
+  updatedTime    DateTime?
+  isDeleted      Boolean       @default(false)
+
+  @@unique([userId, bookId])
 }
