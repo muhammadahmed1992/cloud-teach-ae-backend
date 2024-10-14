@@ -1,9 +1,9 @@
-import { HttpStatus, Injectable, Res } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '@Prisma/prisma.service';
 import { CreateReviewDto } from './dto/review.dto';
 import ApiResponse from '@Helpers/api-response';
 import ResponseHelper from '@Helpers/response-helper';
-import { BookDto } from '@Book/dto/book.dto';
+import Constants from '@Helpers/constants';
 
 @Injectable()
 export class ReviewsService {
@@ -11,6 +11,13 @@ export class ReviewsService {
 
   async createReview(userId: string, createReviewDto: CreateReviewDto): Promise<ApiResponse<CreateReviewDto>> {
     const uId = parseInt(userId, 10);
+
+    const userBook = await this.prisma.userBook.findFirst({
+      where: {userId: uId , bookId: createReviewDto.bookId}
+    });
+    if (!userBook) 
+        return ResponseHelper.CreateResponse<null>(null, HttpStatus.FORBIDDEN, Constants.USER_CREATE_OWN_REVIEW);
+
     const review = await this.prisma.bookReview.create({
         data: {
             userId: uId,
@@ -63,7 +70,7 @@ export class ReviewsService {
 
     // TODO: This can be further refactored and can be placed inside separate decorator to validate this thing.
     if (review.userId !== uId)
-            return ResponseHelper.CreateResponse<number>(rId, HttpStatus.FORBIDDEN, 'User can only delete its own review');
+            return ResponseHelper.CreateResponse<number>(rId, HttpStatus.FORBIDDEN, Constants.USER_OWN_REVIEW);
     
     const result = await this.prisma.bookReview.delete({
       where: { id: rId },
@@ -116,10 +123,16 @@ export class ReviewsService {
       include: {
         user: {
           select: {
-            id: true,
             name: true,
           },
         },
+        book: {
+          select: {
+            title: true, 
+            author: true, 
+            publicationDate: true
+          }
+        }
       },
     });
     return ResponseHelper.CreateResponse<any>(result[0], HttpStatus.OK, 'Book review retrieved successfully');

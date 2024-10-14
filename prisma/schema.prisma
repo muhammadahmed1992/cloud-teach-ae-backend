@@ -74,6 +74,4 @@ model UserBook {
   createdTime    DateTime      @default(now())
   updatedTime    DateTime?
   isDeleted      Boolean       @default(false)
-
-  @@unique([userId, bookId])
 }

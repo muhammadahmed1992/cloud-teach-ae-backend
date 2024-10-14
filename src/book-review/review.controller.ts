@@ -8,17 +8,18 @@ import ApiResponse from '@Helpers/api-response';
 
 @Controller('reviews')
 @UseGuards(RolesGuard)
-@Roles(RoleTypes.Admin, RoleTypes.User)
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
+  @Roles(RoleTypes.Admin, RoleTypes.User)
   async create(@Request() req, @Body() createReviewDto: CreateReviewDto): Promise<ApiResponse<CreateReviewDto>> {
     const userId = req.user.id;
     return this.reviewsService.createReview(userId, createReviewDto);
   }
 
   @Put(':id')
+  @Roles(RoleTypes.Admin, RoleTypes.User)
   async update(
     @Request() req,
     @Param('id') id: string,
@@ -29,17 +30,20 @@ export class ReviewsController {
   }
 
   @Delete(':id')
+  @Roles(RoleTypes.Admin, RoleTypes.User)
   async delete(@Request() req, @Param('id') id: string): Promise<ApiResponse<CreateReviewDto | number>> {
     const userId = req.user.id;
     return this.reviewsService.deleteReview(userId, id);
   }
 
   @Get('search')
+  @Roles(RoleTypes.Admin, RoleTypes.User)
   async search(@Query('term') term: string) {
     return this.reviewsService.searchReviews(term);
   }
   
   @Get(':bookId')
+  @Roles(RoleTypes.Admin, RoleTypes.User)
   async getReviews(@Request() req, @Param('bookId') bookId: string) {
     // TODO: This can be enhanced further by adding base controller or maybe a decorator to get userId.
     const userId = req.user.id;
@@ -47,6 +51,7 @@ export class ReviewsController {
   }
 
   @Get(':bookId/book')
+  @Roles(RoleTypes.Admin, RoleTypes.User)
   async getReviewsForBook(@Param('bookId') bookId: string) {
     const reviews = await this.reviewsService.getReviewsForBook(parseInt(bookId, 10));
     return reviews;

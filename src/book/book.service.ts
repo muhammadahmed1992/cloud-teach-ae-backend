@@ -5,6 +5,7 @@ import ApiResponse from '@Helpers/api-response';
 import { BookDto } from './dto/book.dto';
 import ResponseHelper from '@Helpers/response-helper';
 import Constants from '@Helpers/constants';
+import { BooksDTO } from './dto/books.dto';
 
 @Injectable()
 export class BookService {
@@ -17,11 +18,11 @@ export class BookService {
       return ResponseHelper.CreateResponse<BookDto>(book, HttpStatus.CREATED, Constants.BOOK_CREATED);
   }
 
-  async findAll(): Promise<ApiResponse<BookDto[]>> {
+  async findAll(): Promise<ApiResponse<BooksDTO[]>> {
     const books: Book[] = await this.prisma.book.findMany({
       where: { isDeleted: false },
     });
-    return ResponseHelper.CreateResponse<BookDto[]>(books, HttpStatus.OK);
+    return ResponseHelper.CreateResponse<BooksDTO[]>(books, HttpStatus.OK);
   }
 
   async findOne(id: number): Promise<ApiResponse<BookDto | null>> {
@@ -49,6 +50,14 @@ export class BookService {
         if (!book)
             return ResponseHelper.CreateResponse<number>(id, HttpStatus.NOT_FOUND, Constants.BOOK_NOT_FOUND);
         
+        // Checking if it is already assigned to any user...        
+        const result = await this.prisma.userBook.findFirst({
+          where: {bookId: id}
+        });
+
+        if (result)
+            return ResponseHelper.CreateResponse<number>(id, HttpStatus.FORBIDDEN, Constants.BOOK_ALREADY_ASSIGNED);
+
         const deletedBook = await this.prisma.book.update({
             where: { id },
             data: { isDeleted: true }
