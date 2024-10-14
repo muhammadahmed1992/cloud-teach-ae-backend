@@ -23,20 +23,6 @@ export class UserService {
     return ResponseHelper.CreateResponse<CreateUserDto>(createdUser, HttpStatus.CREATED, Constants.USER_CREATED);
   }
 
-  async findById(id: number): Promise<ApiResponse<CreateUserDto>> {
-    const user: User = await this.prisma.user.findUnique({
-      where: { id },
-    });
-    return ResponseHelper.CreateResponse<CreateUserDto>(user, HttpStatus.FOUND);
-  }
-
-  async findByName(name: string): Promise<ApiResponse<CreateUserDto>> {
-    const user: User = await this.prisma.user.findUnique({
-      where: { name },
-    });
-    return ResponseHelper.CreateResponse<CreateUserDto>(user, HttpStatus.FOUND);
-  }
-
   private async hashPassword(password: string): Promise<string> {
     return await hash(password, 10);
   }
