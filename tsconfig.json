@@ -16,7 +16,11 @@
       "@Auth/*": ["auth/*"],
       "@Admin/*": ["admin/*"],
       "@User/*": ["user/*"],
-      "@Interceptor": ["interceptor/*"]
+      "@Interceptor/*": ["interceptor/*"],
+      "@Prisma/*": ["prisma/*"],
+      "@JWT/*": ["jwt/*"],
+      "@Guards/*": ["guards/*"],
+      "@Filters/*": ["filter/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
