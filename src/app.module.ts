@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
+import { PrismaModule } from 'prisma/prisma.module';
+import { AuthModule } from '@Auth/auth.module';
 import { AdminModule } from '@Admin/admin.module';
 import { UserModule } from '@User/user.module';
-import { AuthModule } from '@Auth/auth.module';
-import { PrismaModule } from 'prisma/prisma.module';
-import { ConfigModule } from '@nestjs/config';
+import { BookModule } from '@Book/book.module'
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -14,7 +15,8 @@ import { ConfigModule } from '@nestjs/config';
     UserModule,
     AuthModule,
     PrismaModule,
-    AuthModule
+    AuthModule,
+    BookModule
   ]
 })
 export class AppModule {}

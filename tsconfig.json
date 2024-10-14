@@ -20,7 +20,8 @@
       "@Prisma/*": ["prisma/*"],
       "@JWT/*": ["jwt/*"],
       "@Guards/*": ["guards/*"],
-      "@Filters/*": ["filter/*"]
+      "@Filters/*": ["filter/*"],
+      "@Book/*": ["book/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
