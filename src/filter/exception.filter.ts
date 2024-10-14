@@ -23,7 +23,7 @@ import ResponseHelper from '@Helpers/response-helper';
         exception instanceof HttpException
           ? (exception.getResponse() as any).message || 'Error occurred'
           : 'Internal server error';
-  
+      console.error(exception);
       // Log the error (optional)
       console.error(`Error: ${JSON.stringify(message)}`);
   
