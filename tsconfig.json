@@ -21,7 +21,8 @@
       "@JWT/*": ["jwt/*"],
       "@Guards/*": ["guards/*"],
       "@Filters/*": ["filter/*"],
-      "@Book/*": ["book/*"]
+      "@Book/*": ["book/*"],
+      "@Review/*": ["review-book/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

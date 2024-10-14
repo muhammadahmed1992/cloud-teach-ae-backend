@@ -6,6 +6,7 @@ import { AuthModule } from '@Auth/auth.module';
 import { AdminModule } from '@Admin/admin.module';
 import { UserModule } from '@User/user.module';
 import { BookModule } from '@Book/book.module'
+import { ReviewsModule } from 'book-review/review.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -16,7 +17,8 @@ import { BookModule } from '@Book/book.module'
     AuthModule,
     PrismaModule,
     AuthModule,
-    BookModule
+    BookModule,
+    ReviewsModule
   ]
 })
 export class AppModule {}
