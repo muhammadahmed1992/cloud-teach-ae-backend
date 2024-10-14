@@ -12,3 +12,28 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+// User model
+model User {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  password    String
+  createdTime DateTime   @default(now())
+  updatedTime DateTime?  @updatedAt
+  isDeleted   Boolean    @default(false)
+  roleId      Int
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+}
+
+// Role model
+model Role {
+  id          Int        @id @default(autoincrement())
+  name        String   
+  description String?
+  createdTime DateTime   @default(now())
+  updatedTime DateTime?  @updatedAt
+  isDeleted   Boolean    @default(false)
+
+  users User[]
+}
