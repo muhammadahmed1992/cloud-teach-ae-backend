@@ -7,8 +7,7 @@ class BookInfoDto {
   class UserInfoDto {
     name: string;
   }
-  
-  export class BookReviewDto {
+  export class UserBookReviewDTO {
     id: number;
     rating: number;
     reviewText: string;
@@ -18,6 +17,11 @@ class BookInfoDto {
     createdTime: Date;
     updatedTime: Date | null;
     isDeleted: boolean;
+  }
+  export class BookReviewDto extends UserBookReviewDTO {
+
     book: BookInfoDto;
     user: UserInfoDto;
   }  
+
+ 
