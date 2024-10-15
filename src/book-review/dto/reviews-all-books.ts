@@ -1,19 +1,23 @@
-export default class ReviewsAllBookResponse {
-    id: string;
-    bookId: string;
-    book: BookDTOResponse;
-    user: {
-      name: string
-    };
-    userId: string;
+class BookInfoDto {
+    title: string;
+    author: string;
+    publicationDate: Date;
+  }
+  
+  class UserInfoDto {
+    name: string;
+  }
+  
+  export class BookReviewDto {
+    id: number;
     rating: number;
     reviewText: string;
     dateOfReview: Date;
-}
-
-class BookDTOResponse {
-    title: string;
-    author: string;
-    publicationDate: string;
-    bookCover?: string | null; 
-};
+    bookId: number;
+    userId: number;
+    createdTime: Date;
+    updatedTime: Date | null;
+    isDeleted: boolean;
+    book: BookInfoDto;
+    user: UserInfoDto;
+  }  
