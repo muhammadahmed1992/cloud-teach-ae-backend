@@ -12,5 +12,6 @@ export default class Constants {
     public static readonly BOOK_TITLE_ALREADY_EXISTS = "Title is already exists!. Please choose another title";
 
     public static readonly USER_OWN_REVIEW = 'User can only delete its own review';
-    public static readonly USER_CREATE_OWN_REVIEW = 'User can only mark review to its assigned book';
+    public static readonly USER_EDIT_OWN_REVIEW = 'User can only update to its book';
+    public static readonly USER_REVIEW_NOT_FOUND = 'Invalid review';
 }

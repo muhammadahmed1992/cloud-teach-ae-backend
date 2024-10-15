@@ -83,58 +83,6 @@ async function main() {
     });
   }
 
-  const users = await prisma.user.findMany({ where: { roleId: userRole.id } });
-  const books = await prisma.book.findMany();
-
-  const sharedBooks = books.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 2) + 3);
-
-  for (const user of users) {
-    let selectedBooks = [];
-
-    if (user.name === 'Jeff' || user.name === 'Adams') {
-      selectedBooks.push(...sharedBooks);
-
-      const remainingBooks = books.filter(book => !sharedBooks.includes(book));
-      const uniqueBooks = remainingBooks.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 2) + 5);
-
-      selectedBooks.push(...uniqueBooks);
-    } else {
-      selectedBooks = books.sort(() => 0.5 - Math.random()).slice(0, 5);
-    }
-
-    for (const book of selectedBooks) {
-      const existingUserBook = await prisma.userBook.findFirst({
-        where: {
-          userId: user.id,
-          bookId: book.id,
-          isDeleted: false,
-        },
-      });
-
-      if (existingUserBook) {
-        await prisma.userBook.update({
-          where: {
-            id: existingUserBook.id,
-          },
-          data: {
-            updatedTime: new Date(),
-            isDeleted: false,
-          },
-        });
-      } else {
-        await prisma.userBook.create({
-          data: {
-            userId: user.id,
-            bookId: book.id,
-            createdTime: new Date(),
-            updatedTime: new Date(),
-            isDeleted: false,
-          },
-        });
-      }
-    }
-  }
-
   console.log('Seed data created.');
 }
 
