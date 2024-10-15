@@ -17,11 +17,8 @@ class BookInfoDto {
     createdTime: Date;
     updatedTime: Date | null;
     isDeleted: boolean;
-  }
-  export class BookReviewDto extends UserBookReviewDTO {
-
     book: BookInfoDto;
-    user: UserInfoDto;
-  }  
+    user?: UserInfoDto;    
+  }
 
  
