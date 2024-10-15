@@ -58,14 +58,6 @@ export class BookService {
         });
         if (!book)
             return ResponseHelper.CreateResponse<number>(id, HttpStatus.NOT_FOUND, Constants.BOOK_NOT_FOUND);
-        
-        // Checking if it is already assigned to any user...        
-        const result = await this.prisma.userBook.findFirst({
-          where: {bookId: id}
-        });
-
-        if (result)
-            return ResponseHelper.CreateResponse<number>(id, HttpStatus.FORBIDDEN, Constants.BOOK_ALREADY_ASSIGNED);
 
         const deletedBook = await this.prisma.book.update({
             where: { id },
