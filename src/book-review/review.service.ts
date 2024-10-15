@@ -12,12 +12,6 @@ export class ReviewsService {
   async createReview(userId: string, createReviewDto: CreateReviewDto): Promise<ApiResponse<CreateReviewDto>> {
     const uId = parseInt(userId, 10);
 
-    const userBook = await this.prisma.userBook.findFirst({
-      where: {userId: uId , bookId: createReviewDto.bookId}
-    });
-    if (!userBook) 
-        return ResponseHelper.CreateResponse<null>(null, HttpStatus.FORBIDDEN, Constants.USER_CREATE_OWN_REVIEW);
-
     const review = await this.prisma.bookReview.create({
         data: {
             userId: uId,
@@ -46,10 +40,10 @@ export class ReviewsService {
     });
 
     if (review.userId !== userId)
-        return ResponseHelper.CreateResponse<number>(rId, HttpStatus.FORBIDDEN, 'User can only update to its book');
+        return ResponseHelper.CreateResponse<number>(rId, HttpStatus.FORBIDDEN, Constants.USER_EDIT_OWN_REVIEW);
 
     if (!review)
-         return ResponseHelper.CreateResponse<number>(rId, HttpStatus.NOT_FOUND);
+         return ResponseHelper.CreateResponse<number>(rId, HttpStatus.NOT_FOUND, Constants.INVALID_USER);
     
     const response =  await this.prisma.bookReview.update({
       where: { id: rId },

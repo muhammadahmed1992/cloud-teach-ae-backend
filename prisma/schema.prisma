@@ -48,7 +48,6 @@ model Book {
   updatedTime     DateTime?
   isDeleted       Boolean    @default(false)
   reviews         BookReview[]
-  userBooks       UserBook[]
 }
 
 model BookReview {
@@ -60,17 +59,6 @@ model BookReview {
   userId         Int
   book           Book          @relation(fields: [bookId], references: [id], onDelete: Cascade)
   user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdTime    DateTime      @default(now())
-  updatedTime    DateTime?
-  isDeleted      Boolean       @default(false)
-}
-
-
-model UserBook {
-  id             Int          @id @default(autoincrement())
-  userId         Int
-  bookId         Int
-  book           Book          @relation(fields: [bookId], references: [id])
   createdTime    DateTime      @default(now())
   updatedTime    DateTime?
   isDeleted      Boolean       @default(false)
