@@ -1,6 +1,6 @@
 import { Controller, Get } from "@nestjs/common";
 
-@Controller()
+@Controller('heart-beat')
 export class HeartBeatController {
     @Get()
     public async health(){
