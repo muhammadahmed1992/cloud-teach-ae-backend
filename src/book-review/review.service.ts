@@ -102,15 +102,7 @@ export class ReviewsService {
             : {},
         ],
       },
-      include: {
-        book: true,
-        user: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+      include: this.getIncludeExpr(),
     });
 
     if (!response?.length) {
@@ -124,21 +116,25 @@ export class ReviewsService {
     const bId = parseInt(bookId, 10);
     const result = await this.prisma.bookReview.findMany({
       where: { bookId: bId, isDeleted: false },
-      include: {
-        user: {
-          select: {
-            name: true,
-          },
-        },
-        book: {
-          select: {
-            title: true, 
-            author: true, 
-            publicationDate: true
-          }
-        }
-      },
+      include: this.getIncludeExpr(),
     });
     return ResponseHelper.CreateResponse<UserBookReviewDTO[]>(result, HttpStatus.OK, 'Book review retrieved successfully');
   }
+
+  private getIncludeExpr() {
+    return {
+      user: {
+        select: {
+          name: true,
+        },
+      },
+      book: {
+        select: {
+          title: true, 
+          author: true, 
+          publicationDate: true
+        }
+      }
+    };
+  };
 }

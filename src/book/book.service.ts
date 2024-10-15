@@ -26,15 +26,6 @@ export class BookService {
   }
 
   async update(id: number, updateBookDto: BookDto): Promise<ApiResponse<BookDto>> {
-
-    // Checking if title is already exists then don't allow to update.
-    const existingBook = await this.prisma.book.findUnique({
-      where: {title: updateBookDto.title}
-    });
-
-    if (existingBook)
-        return ResponseHelper.CreateResponse<BookDto>(null, HttpStatus.FORBIDDEN, Constants.BOOK_TITLE_ALREADY_EXISTS);
-
     const book = await this.prisma.book.update({
       where: { id },
       data: updateBookDto,
