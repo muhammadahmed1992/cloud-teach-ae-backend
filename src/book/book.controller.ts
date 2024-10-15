@@ -29,7 +29,7 @@ export class BookController {
   /**
    * This endpoint is for fetching all books. 
    */  
-  @Roles(RoleTypes.Admin)
+  @Roles(RoleTypes.Admin, RoleTypes.User)
   @Get()
   async findAll(): Promise<ApiResponse<BooksDTO[]>> {
     const books = await this.bookService.findAll();
