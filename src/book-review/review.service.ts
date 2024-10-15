@@ -4,7 +4,7 @@ import { CreateReviewDto } from './dto/review.dto';
 import ApiResponse from '@Helpers/api-response';
 import ResponseHelper from '@Helpers/response-helper';
 import Constants from '@Helpers/constants';
-import { BookReviewDto, UserBookReviewDTO } from './dto/reviews-all-books';
+import { UserBookReviewDTO } from './dto/reviews-all-books';
 
 @Injectable()
 export class ReviewsService {
@@ -25,10 +25,19 @@ export class ReviewsService {
     return ResponseHelper.CreateResponse<CreateReviewDto>(review, HttpStatus.CREATED);
   }
 
-  async getReviewsByBookId(userId: string): Promise<ApiResponse<UserBookReviewDTO[]>> {
+  async getReviewsByUserId(userId: string): Promise<ApiResponse<UserBookReviewDTO[]>> {
     const uId = parseInt(userId, 10);
     const response = await this.prisma.bookReview.findMany({
-      where: { userId: uId }
+      where: { userId: uId },
+      include: {
+        book: {
+          select: {
+            title: true, 
+            author: true, 
+            publicationDate: true
+          }
+        }
+      }
     });
     return ResponseHelper.CreateResponse<UserBookReviewDTO[]>(response, HttpStatus.OK);
   }
@@ -111,9 +120,10 @@ export class ReviewsService {
     return ResponseHelper.CreateResponse<CreateReviewDto[]>(response, HttpStatus.OK);
   }
 
-  async getReviewsForBook(bookId: number): Promise<ApiResponse<BookReviewDto[]>> {
+  async getReviewsForByBookId(bookId: string): Promise<ApiResponse<UserBookReviewDTO[]>> {
+    const bId = parseInt(bookId, 10);
     const result = await this.prisma.bookReview.findMany({
-      where: { bookId, isDeleted: false },
+      where: { bookId: bId, isDeleted: false },
       include: {
         user: {
           select: {
@@ -129,6 +139,6 @@ export class ReviewsService {
         }
       },
     });
-    return ResponseHelper.CreateResponse<BookReviewDto[]>(result, HttpStatus.OK, 'Book review retrieved successfully');
+    return ResponseHelper.CreateResponse<UserBookReviewDTO[]>(result, HttpStatus.OK, 'Book review retrieved successfully');
   }
 }

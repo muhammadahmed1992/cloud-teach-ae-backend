@@ -42,18 +42,18 @@ export class ReviewsController {
     return this.reviewsService.searchReviews(term);
   }
   
-  @Get('/books')
+  @Get('/user/books')
   @Roles(RoleTypes.Admin, RoleTypes.User)
   async getReviews(@Request() req) {
     // TODO: This can be enhanced further by adding base controller or maybe a decorator to get userId.
     const userId = req.user.id;
-    return this.reviewsService.getReviewsByBookId(userId);
+    return this.reviewsService.getReviewsByUserId(userId);
   }
 
   @Get(':bookId/book')
   @Roles(RoleTypes.Admin, RoleTypes.User)
   async getReviewsForBook(@Param('bookId') bookId: string) {
-    const reviews = await this.reviewsService.getReviewsForBook(parseInt(bookId, 10));
+    const reviews = await this.reviewsService.getReviewsForByBookId(bookId);
     return reviews;
   }
 }
