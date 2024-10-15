@@ -6,6 +6,7 @@ import { AuthModule } from '@Auth/auth.module';
 import { UserModule } from '@User/user.module';
 import { BookModule } from '@Book/book.module'
 import { ReviewsModule } from 'book-review/review.module';
+import { HeartBeatController } from 'heart-beat.controller';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -17,6 +18,7 @@ import { ReviewsModule } from 'book-review/review.module';
     AuthModule,
     BookModule,
     ReviewsModule
-  ]
+  ],
+  controllers: [HeartBeatController]
 })
 export class AppModule {}
