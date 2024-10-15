@@ -62,27 +62,6 @@ async function main() {
     });
   }
 
-  // Dummy book records
-  const booksData = [];
-  for (let i = 1; i <= 30; i++) {
-    booksData.push({
-      title: `Book ${i}`,
-      author: `Author ${i}`,
-      publicationDate: new Date(`2020-0${i % 12 + 1}-01`),
-      createdTime: new Date(),
-      updatedTime: new Date(),
-      isDeleted: false,
-    });
-  }
-
-  for (const bookData of booksData) {
-    await prisma.book.upsert({
-      where: { title: bookData.title },
-      update: {},
-      create: bookData,
-    });
-  }
-
   console.log('Seed data created.');
 }
 

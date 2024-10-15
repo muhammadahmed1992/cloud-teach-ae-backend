@@ -114,7 +114,7 @@ export class ReviewsService {
     });
 
     if (!response?.length) {
-      return ResponseHelper.CreateResponse<null>(null, HttpStatus.NOT_FOUND);
+      return ResponseHelper.CreateResponse<CreateReviewDto[]>(null, HttpStatus.NOT_FOUND);
     }
   
     return ResponseHelper.CreateResponse<CreateReviewDto[]>(response, HttpStatus.OK);
