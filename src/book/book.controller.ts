@@ -37,17 +37,6 @@ export class BookController {
   }
 
   /**
-   * This endpoint is for fetching specified book.
-   * @param :id it will be a book id. 
-   */  
-  @Roles(RoleTypes.Admin)
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<BookDto>> {
-    const book = await this.bookService.findOne(parseInt(id, 10));
-    return book;
-  }
-
-  /**
    * This endpoint is for updating specified book.
    * @param :id it will be a book id. 
    */   

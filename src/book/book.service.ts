@@ -25,16 +25,6 @@ export class BookService {
     return ResponseHelper.CreateResponse<BooksDTO[]>(books, HttpStatus.OK);
   }
 
-  async findOne(id: number): Promise<ApiResponse<BookDto | null>> {
-    const book: Book | null = await this.prisma.book.findUnique({
-      where: { id, isDeleted: false },
-    });
-    if (!book) {
-        return ResponseHelper.CreateResponse<null>(null, HttpStatus.NOT_FOUND, Constants.BOOK_NOT_FOUND);
-    }
-    return ResponseHelper.CreateResponse<BookDto>(book, HttpStatus.FOUND);
-  }
-
   async update(id: number, updateBookDto: BookDto): Promise<ApiResponse<BookDto>> {
 
     // Checking if title is already exists then don't allow to update.
@@ -43,7 +33,7 @@ export class BookService {
     });
 
     if (existingBook)
-        return ResponseHelper.CreateResponse<null>(null, HttpStatus.FORBIDDEN, Constants.BOOK_TITLE_ALREADY_EXISTS);
+        return ResponseHelper.CreateResponse<BookDto>(null, HttpStatus.FORBIDDEN, Constants.BOOK_TITLE_ALREADY_EXISTS);
 
     const book = await this.prisma.book.update({
       where: { id },
