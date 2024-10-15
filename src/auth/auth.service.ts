@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable} from '@nestjs/common';
-import { UserService } from '@User/User.service';
+import { UserService } from '@User/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDTO } from '@Auth/dto/login.dto';
 import ApiResponse from '@Helpers/api-response';
