@@ -129,6 +129,6 @@ export class ReviewsService {
         }
       },
     });
-    return ResponseHelper.CreateResponse<any>(result[0], HttpStatus.OK, 'Book review retrieved successfully');
+    return ResponseHelper.CreateResponse<any>(result, HttpStatus.OK, 'Book review retrieved successfully');
   }
 }
