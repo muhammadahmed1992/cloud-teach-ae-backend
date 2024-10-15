@@ -4,7 +4,7 @@ import { CreateReviewDto } from './dto/review.dto';
 import ApiResponse from '@Helpers/api-response';
 import ResponseHelper from '@Helpers/response-helper';
 import Constants from '@Helpers/constants';
-import { BookReviewDto } from './dto/reviews-all-books';
+import { BookReviewDto, UserBookReviewDTO } from './dto/reviews-all-books';
 
 @Injectable()
 export class ReviewsService {
@@ -25,13 +25,12 @@ export class ReviewsService {
     return ResponseHelper.CreateResponse<CreateReviewDto>(review, HttpStatus.CREATED);
   }
 
-  async getReviewsByBookId(userId: string, bookId: string): Promise<ApiResponse<any>> {
+  async getReviewsByBookId(userId: string): Promise<ApiResponse<UserBookReviewDTO[]>> {
     const uId = parseInt(userId, 10);
-    const bId = parseInt(bookId, 10);
     const response = await this.prisma.bookReview.findMany({
-      where: { bookId: bId, userId: uId }
+      where: { userId: uId }
     });
-    return ResponseHelper.CreateResponse<any>(response, HttpStatus.OK);
+    return ResponseHelper.CreateResponse<UserBookReviewDTO[]>(response, HttpStatus.OK);
   }
 
   async updateReview(userId: number, reviewId: string, updateReviewDto: CreateReviewDto): Promise<ApiResponse<CreateReviewDto | number>> {

@@ -59,10 +59,21 @@ export class BookService {
         if (!book)
             return ResponseHelper.CreateResponse<number>(id, HttpStatus.NOT_FOUND, Constants.BOOK_NOT_FOUND);
 
-        const deletedBook = await this.prisma.book.update({
+        const deletedBook = await this.prisma.$transaction(async (prisma) => {
+
+          await prisma.bookReview.updateMany({
+            where: { bookId: id },
+            data: { isDeleted: true },
+          });
+        
+          const deletedBook = await prisma.book.update({
             where: { id },
-            data: { isDeleted: true }
+            data: { isDeleted: true },
+          });
+        
+          return deletedBook;
         });
+        
         return ResponseHelper.CreateResponse<BookDto>(deletedBook, HttpStatus.OK, Constants.BOOK_DELETED);
     }
 
