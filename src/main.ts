@@ -9,6 +9,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
   app.useGlobalFilters(new GenericExceptionsFilter());
   app.useGlobalInterceptors(new ResponseHandlerInterceptor());
+
+  app.enableCors({
+    origin: '*'
+  });
   await app.listen(3000);
 }
 bootstrap();

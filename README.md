@@ -26,48 +26,95 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+Backend
+---
 
-```bash
-$ npm install
-```
+## **Installation**
 
-## Running the app
+### Prerequisites
 
-```bash
-# development
-$ npm run start
+- npm or yarn
+- MySQL or another supported database
+- NestJS CLI (for backend)
+- Run prisma migration  
 
-# watch mode
-$ npm run start:dev
+npm install -g @nestjs/cli
+---
 
-# production mode
-$ npm run start:prod
-```
+## **Backend Setup (NestJS)**
 
-## Test
 
-```bash
-# unit tests
-$ npm run test
+1. Install dependencies:
 
-# e2e tests
-$ npm run test:e2e
+npm install
 
-# test coverage
-$ npm run test:cov
-```
+2. Set up the environment variables:
 
-## Support
+Create a `.env` file in the `backend` directory with the following content:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+DATABASE_URL="mysql://root:password@localhost:3306/cloudtech"
+MYSQL_DATABASE=cloudtech
+MYSQL_ROOT_PASSWORD=password
+JWT_SECRET="yoursecretkey"
+JWT_EXPIRATION=1h
 
-## Stay in touch
+3. npm run reset-migrate
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+4. Start the NestJS application:
 
-## License
+npm run start:dev
 
-Nest is [MIT licensed](LICENSE).
+
+## **API Endpoints**
+
+### **Auth**
+
+- `POST /auth/login` - Logs in a user and returns a JWT.
+
+### **Books**
+
+- `POST /books` - Admin only. Create a new book.
+- `GET /books` - Admin and User. Fetch all books.
+- `PUT /books/:id` - Admin only. Update a book by ID.
+- `DELETE /books/:id` - Admin only. Delete a book by ID.
+
+### **Reviews**
+
+- `POST /reviews` - Admin and User. Submit a new review.
+- `GET /reviews/:bookId/book` - Admin and User. Get reviews for a book.
+- `PUT /reviews/:id` - Admin and User. Update a review by ID.
+- `DELETE /reviews/:id` - Admin and User. Delete a review by ID.
+
+---
+
+## **Environment Variables**
+
+Both backend and frontend use environment variables for configuration.
+
+### **Backend (`.env` file)**
+
+DATABASE_URL="mysql://root:crmsrv@12A@localhost:3306/cloudtech"
+
+MYSQL_DATABASE=cloudtech
+MYSQL_ROOT_PASSWORD=crmsrv@12A
+
+JWT_SECRET="cloadtechae@1234"
+JWT_EXPIRATION=1h
+
+---
+
+## **Running Migrations**
+
+In the backend, you can reset and run migrations using:
+
+npm run reset-migrate
+
+This command resets the database and applies the latest migrations.
+
+---
+
+## **License**
+
+This project is licensed under the MIT License.
+
+----
